@@ -21,8 +21,8 @@ class Card:
     def total(self):
         return self.num1 + self.num2
     
-    def set_clicked(self, click):
-        self.clicked = click
+    def set_clicked(self):
+        self.clicked = not self.clicked
         
     def __str__(self):
         return "Card: " + str(self.num1) + " + " + str(self.num2) + " = " + str(self.total)
