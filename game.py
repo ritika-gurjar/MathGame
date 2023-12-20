@@ -22,14 +22,15 @@ def run_game():
         screen.fill(colors["eerie black"])
 
         # RENDER YOUR GAME HERE
-        start_y = 100
-        start_x = 100
+        start_y = 60
+        start_x = 50
         for i in range(4):
             for j in range(4):
-                pygame.draw.rect(screen, colors["buff"], board[i][j].rect(start_x, start_y, 100, 100), 0, 1)
-                start_x += 150
-            start_y += 150
-            start_x = 100
+                pygame.draw.rect(screen, colors["buff"], board[i][j].rect(start_x, start_y, 250, 130), 0, 10)
+                screen.blit(board[i][j].text(), (start_x + 50, start_y + 40))
+                start_x += 285
+            start_y += 170
+            start_x = 50
 
 
         # flip() the display to put your work on screen

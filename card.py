@@ -29,11 +29,11 @@ class Card:
         return pygame.Rect(left, top, width, height)
     
     def text(self):
-        base_font = pygame.font.Font(None, 32) 
+        base_font = pygame.font.Font(None, 90) 
         return base_font.render(self.clue(), True, "#1C1D21") 
     
     def clue(self):
-        return "Card: " + str(self.num1) + " + " + str(self.num2)
+        return str(self.num1) + " + " + str(self.num2)
 
 
 
