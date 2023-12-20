@@ -30,7 +30,7 @@ class Card:
     
     def text(self):
         base_font = pygame.font.Font(None, 90) 
-        return base_font.render(self.clue(), True, "#1C1D21") 
+        return base_font.render(self.clue(), True, "#902923") 
     
     def clue(self):
         return str(self.num1) + " + " + str(self.num2)
