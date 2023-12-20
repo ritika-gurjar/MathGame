@@ -2,9 +2,7 @@
 import pygame
 import random
 from card import Card
-
-colors = {"buff":"#ddae7e", "sunset":"#F2C57C", "cambridge blue":"#7FB685", "hooker's green": "#426A5A", "light coral": "#EF6F6C",
-              "eerie black":"#1C1D21", "auburn":"#A22C29","burnt umber":"#902923"}
+import constants
 
 def run_game():
     board = create_board()
@@ -18,16 +16,17 @@ def run_game():
             if event.type == pygame.QUIT:
                 running = False
 
+            #if event.type == pygame.MOUSEBUTTONDOWN: 
+
         # fill the screen with a color to wipe away anything from last frame
-        screen.fill(colors["eerie black"])
+        screen.fill(constants.colors["eerie black"])
 
         # RENDER YOUR GAME HERE
         start_y = 60
         start_x = 50
         for i in range(4):
             for j in range(4):
-                pygame.draw.rect(screen, colors["buff"], board[i][j].rect(start_x, start_y, 250, 130), 0, 10)
-                screen.blit(board[i][j].text(), (start_x + 50, start_y + 40))
+                board[i][j].draw(start_x, start_y, screen, )
                 start_x += 285
             start_y += 170
             start_x = 50
