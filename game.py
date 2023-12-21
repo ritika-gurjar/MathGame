@@ -1,4 +1,5 @@
 #4 by 4 array to represent the facts
+#Plus wins. Wins are represented as a list of cards. 
 import pygame
 import random
 from card import Card
@@ -6,11 +7,9 @@ import constants
 
 def run_game():
     board = create_board()
-    start_y = 60
-    start_x = 50
-    inc_x = 285
-    inc_y = 170
-    posns = pos_board(start_x, start_y, 250, 130)
+    wins = []
+    gamestate = (wins, board)
+    posns = pos_board(constants.start_x, constants.start_y, constants.inc_x - 15, constants.inc_y - 40, constants.inc_x, constants.inc_y, board)
     
     pygame.init()
     screen = pygame.display.set_mode((1200, 720))
@@ -25,21 +24,16 @@ def run_game():
                 rc = pos_to_rc(pygame.mouse.get_pos(), posns)
                 if rc != -1:
                     board[rc[0]][rc[1]].set_clicked()
+            
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+                gamestate = check_board(gamestate)
+                posns = pos_board(constants.start_x, constants.start_y, constants.inc_x - 15, constants.inc_y - 40, constants.inc_x, constants.inc_y, board)
 
         # fill the screen with a color to wipe away anything from last frame
         screen.fill(constants.colors["eerie black"])
 
         # RENDER YOUR GAME HERE
-        start_y = 60
-        start_x = 50
-        inc_x = 285
-        inc_y = 170
-        for i in range(4):
-            for j in range(4):
-                board[i][j].draw(start_x, start_y, screen)
-                start_x += inc_x
-            start_y += inc_y
-            start_x = 50
+        draw_game(gamestate, screen)
 
 
         # flip() the display to put your work on screen
@@ -84,23 +78,25 @@ def create_board():
     return board
 
 #returns a 2dlist of positions
-def pos_board(start_x, start_y, width, height):
+def pos_board(start_x, start_y, width, height, inc_x, inc_y, board):
     posns = []
-    for i in range(4):
+    x = start_x
+    start_y = start_y + (4 - len(board)) * inc_y
+    for i in range(len(board)):
         row = []
-        for j in range(4):
-            posn = [(start_x, start_y), (start_x + width, start_y + height)]
+        for j in range(len(board[0])):
+            posn = [(x, start_y), (x + width, start_y + height)]
             row += [posn]
-            start_x += 285
-        start_y += 170
-        start_x = 50
+            x += inc_x
+        start_y += inc_y
+        x = start_x
         posns += [row]
     return posns
 
 #converts a position to a row and column
 def pos_to_rc(xy, posns):
-    for i in range(4):
-        for j in range(4):
+    for i in range(len(posns)):
+        for j in range(len(posns[0])):
             cur_pos = posns[i][j]
             top_left = cur_pos[0]
             bottom_right = cur_pos[1]
@@ -109,5 +105,83 @@ def pos_to_rc(xy, posns):
     
     return -1
 
+#checks whether the board has produced a winning combo
+def check_board(gamestate):
+    #find which ones are true
+    #if the length of this is not equal to 4, return the same thing.
+    #If it is 4, check that the totals are the same.
+    #If the totals are the same, something new needs to happen.
+    #our gamestate changes I guess.
+    clicked = []
+    board = gamestate[1]
+
+    for i in range(len(board)):
+        for j in range(len(board[i])):
+            if board[i][j].clicked:
+                clicked += [board[i][j]]
+    
+    if len(clicked) == 4:
+        nums = {card.total for card in clicked}
+        if len(nums) == 1:
+            #swap the four cards with whatever is in the first row of board.
+            gamestate = rearrange(gamestate)
+    
+    return gamestate
+
+def draw_game(gamestate, screen):
+    
+    wins = gamestate[0]
+    board = gamestate[1]
+
+    colors2 = ["sunset", "cambridge blue", "hooker's green", "light coral"]
+
+    #draws wins
+    start_y = constants.start_y
+    start_x = constants.start_x
+    for i in range(len(wins)):
+        rect = pygame.Rect(start_x, start_y, 4 * constants.inc_x - 40, constants.height)
+        pygame.draw.rect(screen, constants.colors["green"], rect, 0, 10)
+        base_font = pygame.font.Font(None, 90) 
+        text = base_font.render(str(wins[i][0].total), True, constants.colors["eerie black"])
+        screen.blit(text, (start_x + 50, start_y + 40))
+        start_y += constants.inc_y
+
+    #draws board
+    for i in range(len(board)):
+        for j in range(len(board[0])):
+            board[i][j].draw(start_x, start_y, screen)
+            start_x += constants.inc_x
+        start_y += constants.inc_y
+        start_x = constants.start_x
+        
+#swap the four cards with whatever is in the first row of board.
+def rearrange(gamestate):
+    #go thru and find indexes of clicked cards and store them in tuples
+    #then go thru each one and replace
+
+    wins = gamestate[0]
+    board = gamestate[1]
+
+    posns = []
+    for i in range(len(board)):
+        for j in range(len(board[i])):
+            if board[i][j].clicked:
+                posns += [(i,j)]
+
+    posns2 = [(0,0), (0,1), (0,2), (0,3)]
+
+    for i in range(4):
+        swap(posns[i], posns2[i], board)
+
+    wins += [board[0]]
+    board.pop(0)
+    return [wins, board]
+    
+def swap(tuple1, tuple2, board):
+    #print(board)
+    el1 = board[tuple1[0]][tuple1[1]]
+    el2 = board[tuple2[0]][tuple2[1]]
+    board[tuple1[0]][tuple1[1]] = el2
+    board[tuple2[0]][tuple2[1]] = el1
 
 run_game()
