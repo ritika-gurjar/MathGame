@@ -133,14 +133,14 @@ def draw_game(gamestate, screen):
     wins = gamestate[0]
     board = gamestate[1]
 
-    colors2 = ["sunset", "cambridge blue", "hooker's green", "light coral"]
+    colors2 = ["kelly green", "jade", "sea green", "myrtle green"]
 
     #draws wins
     start_y = constants.start_y
     start_x = constants.start_x
     for i in range(len(wins)):
         rect = pygame.Rect(start_x, start_y, 4 * constants.inc_x - 40, constants.height)
-        pygame.draw.rect(screen, constants.colors["green"], rect, 0, 10)
+        pygame.draw.rect(screen, constants.colors[colors2[i]], rect, 0, 10)
         base_font = pygame.font.Font(None, 90) 
         text = base_font.render(str(wins[i][0].total), True, constants.colors["eerie black"])
         screen.blit(text, (start_x + 50, start_y + 40))

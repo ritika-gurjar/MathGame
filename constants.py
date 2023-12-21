@@ -7,7 +7,11 @@ colors = {"sunset":"#F2C57C",
           "auburn":"#A22C29",
           "burnt umber":"#902923",
           "bronze":"#CE7C2A",
-          "green":"#329637"}
+          "green":"#329637",
+          "kelly green":"#2BC016",
+          "jade":"#26A96C",
+          "sea green":"#32936F",
+          "myrtle green":"#387D7A"}
 
 start_y = 60
 start_x = 50
